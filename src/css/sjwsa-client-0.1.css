@@ -23,7 +23,7 @@
     height: 64px;
 }
 
-body {
+.container {
     color: #888888;
     min-width:1000px;
     display:block;

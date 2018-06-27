@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { languageSwitchItem } from '../actions/locales'
-// import i18next from 'i18next'
+import { languageSwitchItem } from '../actions/locales'	
 import { bindActionCreators } from 'redux';
 
-import Header from '../components/header/Header'
+import Body from '../components/body/Body'
 
-class HeaderContainer extends Component {
+class BodyContainer extends Component {
 
 	componentDidMount() {
+		
 	}
 
 	render() {
 		return (
 			<div>
-				<Header />
+				<Body connectionStatus={this.props.connectionStatus} />
 			</div>
 		);
 	}
@@ -22,7 +22,7 @@ class HeaderContainer extends Component {
 
 function mapStateToProps(state) {
     return {
-    	language: state.localesReducer.language,
+        locales: state.i18n,
         localesReducer: state.localesReducer
     }
 }
@@ -36,4 +36,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(BodyContainer);

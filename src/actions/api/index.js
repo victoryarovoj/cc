@@ -26,3 +26,15 @@ export const connectionStatus = () => (dispatch) => {
     xhr.onreadystatechange = readyStateChanged;
     xhr.send();
 }
+
+export const createSession = (url) => (dispatch) => {
+
+    return new Promise(function (resolve, reject) {fetch(url, {
+            method: 'POST',
+            dataType: "json"
+        },).then(function(response) {
+            return response.json();
+           })
+          .catch( alert );
+    })
+}

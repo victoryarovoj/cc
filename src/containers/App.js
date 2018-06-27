@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { connectionStatus } from '../actions/api/';
+import i18next from 'i18next'
 import { getLanguage, getLocaleResourcePath, languageSwitchItem } from '../actions/locales'
 import HeaderContainer from './HeaderContainer';
+import BodyContainer from './BodyContainer';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../css/sjwsa-client-0.1.css'
-
 
 class App extends Component {
 	constructor(props) {
@@ -25,14 +26,15 @@ class App extends Component {
 			_this.setState({connected: _this.props.connectionStatus});
 			setTimeout(this.checkConnection, 10000);
 		}
-
+		i18next.changeLanguage('uk');
 		this.checkConnection();
 	}
+
 	render() {
 		return (
 			<div className="container" style={{width: "970px"}}>
 				<HeaderContainer connectionStatus={connectionStatus} />
-				<h1>ping</h1>
+				<BodyContainer connectionStatus={connectionStatus} />
 			</div>
 		);
 	}

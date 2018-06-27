@@ -43,3 +43,10 @@ export const languageSwitchItem = (aDisplayTitle, aLanguageCode, aItems) => (dis
         payload: this.items
     })
 }
+
+export const getCurrentLanguage = (lng) => (dispatch) => {
+    return dispatch({
+        type: 'GET_CURRENT_LANGUAGE',
+        payload: lng
+    })
+}

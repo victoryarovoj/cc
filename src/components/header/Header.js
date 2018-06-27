@@ -1,29 +1,56 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import i18next from 'i18next'
-import { languageSwitchItem } from '../../actions/locales'
+import { languageSwitchItem, getCurrentLanguage } from '../../actions/locales'
+import { createSession } from '../../actions/api'
 import { bindActionCreators } from 'redux';
 import ServiceConnectionStatus from './ServiceConnectionStatus'
 import Downloads from './Downloads'
 
 import logo from '../../img/sjwsa-client-logo.png'
 
+const availableLanguege = ["uk", "pl", "en"];
+const availableLanguegeValue = ["УКР", "PLN", "ENG"];
 
 class Header extends Component {
 
 	componentDidMount() {
-		i18next.changeLanguage('pl');
 		i18next.changeLanguage('uk');
-		var availableLanguege = [];
-		this.props.actions.languageSwitchItem('укр', 'uk', availableLanguege);
+		this.props.actions.getCurrentLanguage('uk');
+		this.createTmpSession()
+		
 	}
 
-	changeLang(lang){
-		var availableLanguege = ["en", "uk", "pl"];
-        this.props.actions.languageSwitchItem('en', lang, availableLanguege);
-        console.log(i18next.language);
-        
+	createTmpSession() {
+        this.props.actions.createSession("https://local.cipher.kiev.ua:9090/api/v1/ticket/").then(response => {
+    		console.log(response);
+        }).catch(function (e) {
+            alert(i18next.t("ts:tsCreatingError"))
+        })
     }
+
+	changeLang(lang){
+		this.props.actions.getCurrentLanguage(lang);
+        this.props.actions.languageSwitchItem('eng', lang, availableLanguege);       
+    }
+
+    _renderLanguageButtonLine() {  
+
+	    function options(child, index) {
+	      let activeClass = (this.props.language === child ? 'btn btn-outline-success btn-sm' : 'btn btn-default btn-sm');
+	      let textValue = (availableLanguegeValue[index])
+
+	      return (
+	        <button key={child} className={activeClass} style={{marginLeft: "7px"}} onClick={this.changeLang.bind(this, child)}>{textValue}</button>
+	      );
+	    }
+
+	    return (
+	    	<div id="languageButtonLine" className="col-md-12 text-md-right">
+	    		{availableLanguege.map(options.bind(this))}
+	        </div>
+	    );
+	}
 
 	render() {
 		return (
@@ -41,11 +68,7 @@ class Header extends Component {
 			        </div>
 			    </div>
 			    <div className="row mtb-default">
-			        <div id="languageButtonLine" className="col-md-12 text-md-right">
-			        	<button className="btn btn-outline-success btn-sm" style={{marginLeft: "7px"}} onClick={this.changeLang.bind(this, "uk")}>УКР</button>
-						<button className="btn btn-default btn-sm" style={{marginLeft: "7px"}} onClick={this.changeLang.bind(this, "pl")}>PLN</button>
-						<button className="btn btn-default btn-sm" style={{marginLeft: "7px"}} onClick={this.changeLang.bind(this, "en")}>ENG</button>
-			        </div>
+			        {this._renderLanguageButtonLine()}
 			    </div>
 			    <hr />
 			    <Downloads connectionStatus={this.props.connectionStatus} />		    
@@ -56,15 +79,17 @@ class Header extends Component {
 
 function mapStateToProps(state) {
     return {
-        locales: state.i18n,
         localesReducer: state.localesReducer,
+        language: state.localesReducer.language,
         connectionStatus: state.connectionStatus
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     const actions = {
-	    languageSwitchItem
+	    languageSwitchItem,
+	    getCurrentLanguage,
+	    createSession
     };
     return {
        actions: bindActionCreators(actions, dispatch)
